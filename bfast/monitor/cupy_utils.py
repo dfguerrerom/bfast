@@ -12,7 +12,7 @@ __critvals = cp.array(utils.__critvals)
 __critval_h = cp.array(utils.__critval_h)
 __critval_period = cp.array(utils.__critval_period)
 __critval_level = cp.array(utils.__critval_level)
-__critval_mr = utils.__critval_mr.tolist()
+__critval_mr = utils.__critval_mr
 
 check = utils.check
 
