@@ -89,10 +89,11 @@ def setup_package():
                         'numpy>=1.11.0',
                         'pandas>=1.0.0',
                         'pyopencl>=2018.2.5',
-                        'scikit-learn>=0.20.3',
                         'scipy>=1.2.1',
                         'matplotlib>=2.2.2',
                         'wget>=3.2',
+                        'cupy>=9.2.0'
+                        
                     ],
                     classifiers=['Intended Audience :: Science/Research',
                                  'Intended Audience :: Developers',
