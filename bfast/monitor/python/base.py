@@ -8,8 +8,8 @@ import multiprocessing as mp
 from functools import partial
 
 import numpy as np
-np.warnings.filterwarnings('ignore')
-np.set_printoptions(suppress=True)
+#np.warnings.filterwarnings('ignore')
+#np.set_printoptions(suppress=True)
 
 from bfast.base import BFASTMonitorBase
 from bfast.monitor.utils import compute_end_history, compute_lam, map_indices
@@ -27,10 +27,9 @@ class BFASTMonitorPython(BFASTMonitorBase):
                  hfrac=0.25,
                  trend=True,
                  level=0.05,
-                 detailed_results=False,
-                 old_version=False,
                  verbose=0,
-                 platform_id=0,
+                 use_mp=False,
+                 use_gpu=False,
                  device_id=0
                  ):
 
@@ -70,12 +69,12 @@ class BFASTMonitorPython(BFASTMonitorBase):
     use_mp : bool, default False
         Determines whether to use the (very primitive) Python
         multiprocessing or not. Enable for a speedup
-
-    Examples
-    --------
-
-    Notes
-    -----
+        
+    use_gpu : bool, default False
+        Use a cpu or a GPU implementation
+        
+    device_id int, default 0
+        Specified the GPU device id.
 
     """
     def __init__(self,
@@ -87,8 +86,11 @@ class BFASTMonitorPython(BFASTMonitorBase):
                  level=0.05,
                  period=10,
                  verbose=0,
-                 use_mp=False
+                 use_mp=False,
+                 use_gpu=False,
+                 device_id=0
                  ):
+        
         super().__init__(start_monitor,
                          freq,
                          k=k,
@@ -97,6 +99,19 @@ class BFASTMonitorPython(BFASTMonitorBase):
                          level=level,
                          period=period,
                          verbose=verbose)
+        
+        # lazy import of numpy/cupy
+        self.use_gpu = use_gpu
+        if self.use_gpu:
+            
+            import cupy as np
+            
+            # use the specified cuda device (default to 0)
+            np.cuda.device.Device(device_id).use()
+            
+        else:
+            
+            import numpy as np
 
         self._timers = {}
         self.use_mp = use_mp
@@ -123,8 +138,9 @@ class BFASTMonitorPython(BFASTMonitorBase):
         self : instance of BFASTMonitor
             The object itself.
         """
-        data_ints = data
-        data = np.copy(data_ints).astype(np.float32)
+        
+        data_ints = np.copy(data)
+        data = np.array(np.copy(data_ints)).astype(np.float32)
 
         # set NaN values
         data[data_ints==nan_value] = np.nan
@@ -132,13 +148,13 @@ class BFASTMonitorPython(BFASTMonitorBase):
         self.n = compute_end_history(dates, self.start_monitor)
 
         # create (complete) seasonal matrix ("patterns" as columns here!)
-        self.mapped_indices = map_indices(dates).astype(np.int32)
+        self.mapped_indices = np.array(map_indices(dates)).astype(np.int32)
         self.X = self._create_data_matrix(self.mapped_indices)
 
         # period = data.shape[0] / np.float(self.n)
-        self.lam = compute_lam(data.shape[0], self.hfrac, self.level, self.period)
+        self.lam = np.array(compute_lam(data.shape[0], self.hfrac, self.level, self.period))
 
-        if self.use_mp:
+        if self.use_mp and not self.use_gpu:
             print("Python backend is running in parallel using {} threads".format(mp.cpu_count()))
             y = np.transpose(data, (1, 2, 0)).reshape(data.shape[1] * data.shape[2], data.shape[0])
             pool = mp.Pool(mp.cpu_count())

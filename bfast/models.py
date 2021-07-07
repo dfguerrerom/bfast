@@ -46,19 +46,15 @@ class BFASTMonitor():
         massively-parallel OpenCL implementation.
 
     platform_id : int, default 0
-        Only relevant if backend='opencl'.
-        Specifies the OpenCL platform id.
+        Specifies the GPU platform id.
 
     device_id int, default 0
-        Only relevant if backend='opencl'.
-        Specified the OpenCL device id.
+        Specified the GPU device id.
 
     detailed_results : bool, default False
-        Only relevant if backend='opencl'.
         If detailed results should be returned or not.
 
     find_magnitudes : bool, default True
-        Only relevant if backend='opencl'.
         If magnitudes should be returned or not.
         Disabling this would improve the performance greatly
 
@@ -118,56 +114,58 @@ class BFASTMonitor():
 
         if self.backend == 'python':
             self._model = BFASTMonitorPython(
-                 start_monitor=self.start_monitor,
-                 freq=self.freq,
-                 k=self.k,
-                 hfrac=self.hfrac,
-                 trend=self.trend,
-                 level=self.level,
-                 period=self.period,
-                 verbose=self.verbose,
-                )
+                start_monitor=self.start_monitor,
+                freq=self.freq,
+                k=self.k,
+                hfrac=self.hfrac,
+                trend=self.trend,
+                level=self.level,
+                period=self.period,
+                verbose=self.verbose
+            )
             
-        elif self.backend == 'cupy' and gpu_available:
-            self._model = BFASTMonitorCuPy(
-                 start_monitor=self.start_monitor,
-                 freq=self.freq,
-                 k=self.k,
-                 hfrac=self.hfrac,
-                 trend=self.trend,
-                 level=self.level,
-                 period=self.period,
-                 verbose=self.verbose,
-                )
+        elif self.backend == 'cupy':
+            self._model = BFASTMonitorPython(
+                start_monitor=self.start_monitor,
+                freq=self.freq,
+                k=self.k,
+                hfrac=self.hfrac,
+                trend=self.trend,
+                level=self.level,
+                period=self.period,
+                verbose=self.verbose,
+                device_id=self.device_id,
+                use_gpu=True
+            )
 
         elif self.backend == 'python-mp':
             self._model = BFASTMonitorPython(
-                 start_monitor=self.start_monitor,
-                 freq=self.freq,
-                 k=self.k,
-                 hfrac=self.hfrac,
-                 trend=self.trend,
-                 level=self.level,
-                 period=self.period,
-                 verbose=self.verbose,
-                 use_mp=True
-                )
+                start_monitor=self.start_monitor,
+                freq=self.freq,
+                k=self.k,
+                hfrac=self.hfrac,
+                trend=self.trend,
+                level=self.level,
+                period=self.period,
+                verbose=self.verbose,
+                use_mp=True
+            )
 
         elif self.backend == 'opencl':
             self._model = BFASTMonitorOpenCL(
-                 start_monitor=self.start_monitor,
-                 freq=self.freq,
-                 k=self.k,
-                 hfrac=self.hfrac,
-                 trend=self.trend,
-                 level=self.level,
-                 period=self.period,
-                 detailed_results=self.detailed_results,
-                 find_magnitudes=self.find_magnitudes,
-                 verbose=self.verbose,
-                 platform_id=self.platform_id,
-                 device_id=self.device_id
-                )
+                start_monitor=self.start_monitor,
+                freq=self.freq,
+                k=self.k,
+                hfrac=self.hfrac,
+                trend=self.trend,
+                level=self.level,
+                period=self.period,
+                detailed_results=self.detailed_results,
+                find_magnitudes=self.find_magnitudes,
+                verbose=self.verbose,
+                platform_id=self.platform_id,
+                device_id=self.device_id
+            )
 
         elif self.backend == "C":
             raise Exception("Multi-core C implementation will be added soon!")
