@@ -13,8 +13,9 @@ URL = 'http://bfast.readthedocs.io'
 LICENSE = 'GNU GENERAL PUBLIC LICENSE'
 DOWNLOAD_URL = 'https://github.com/diku-dk/bfast'
 
-import bfast
-VERSION = bfast.__version__
+#import bfast
+#VERSION = bfast.__version__
+VERSION = '0.8.dev0'
 
 # use setuptools for certain commands
 if len(set(('develop', 'release', 'bdist_egg', 'bdist_rpm',
