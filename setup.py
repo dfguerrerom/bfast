@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import setuptools
+from warnings  import warn, simplefilter
 from distutils.command.clean import clean as Clean
 
 DISTNAME = 'bfast'
@@ -92,9 +93,7 @@ def setup_package():
                         'pyopencl>=2018.2.5',
                         'scipy>=1.2.1',
                         'matplotlib>=2.2.2',
-                        'wget>=3.2',
-                        'cupy>=9.2.0'
-                        
+                        'wget>=3.2',                        
                     ],
                     classifiers=['Intended Audience :: Science/Research',
                                  'Intended Audience :: Developers',
