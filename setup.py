@@ -77,63 +77,52 @@ def configuration(parent_package='', top_path=None):
 
 
 def setup_package():
-    metadata = dict(name=DISTNAME,
-                    maintainer=MAINTAINER,
-                    maintainer_email=MAINTAINER_EMAIL,
-                    description=DESCRIPTION,
-                    license=LICENSE,
-                    url=URL,
-                    version=VERSION,
-                    download_url=DOWNLOAD_URL,
-                    long_description=LONG_DESCRIPTION,
-                    packages=setuptools.find_packages(),
-                    install_requires=[
-                        'numpy>=1.11.0',
-                        'pandas>=1.0.0',
-                        'pyopencl>=2018.2.5',
-                        'scipy>=1.2.1',
-                        'matplotlib>=2.2.2',
-                        'wget>=3.2',                        
-                    ],
-                    classifiers=['Intended Audience :: Science/Research',
-                                 'Intended Audience :: Developers',
-                                 'License :: OSI Approved',
-                                 'Programming Language :: C',
-                                 'Programming Language :: Python',
-                                 'Topic :: Software Development',
-                                 'Topic :: Scientific/Engineering',
-                                 'Operating System :: Microsoft :: Windows',
-                                 'Operating System :: POSIX',
-                                 'Operating System :: Unix',
-                                 'Operating System :: MacOS',
-                                 'Programming Language :: Python :: 3',
-                                 'Programming Language :: Python :: 3.3',
-                                 'Programming Language :: Python :: 3.4',
-                                 'Programming Language :: Python :: 3.5',
-                                 'Programming Language :: Python :: 3.5',
-                                 'Programming Language :: Python :: 3.6',
-                                 ],
-                    cmdclass={'clean': CleanCommand},
-                    setup_requires=["numpy>=1.11.0"],
-                    **extra_setuptools_args)
+    metadata = dict(
+    version=VERSION,
+    name=DISTNAME,
+    maintainer=MAINTAINER,
+    maintainer_email=MAINTAINER_EMAIL,
+    description=DESCRIPTION,
+    license=LICENSE,
+    url=URL,
+    version=VERSION,
+    download_url=DOWNLOAD_URL,
+    long_description=LONG_DESCRIPTION,
+    packages=setuptools.find_packages(),
+    install_requires=[
+        'numpy>=1.11.0',
+        'pandas>=1.0.0',
+        'pyopencl>=2018.2.5',
+        'scipy>=1.2.1',
+        'matplotlib>=2.2.2',
+        'wget>=3.2',                        
+    ],
+    classifiers=[
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved',
+        'Programming Language :: C',
+        'Programming Language :: Python',
+        'Topic :: Software Development',
+        'Topic :: Scientific/Engineering',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX',
+        'Operating System :: Unix',
+        'Operating System :: MacOS',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+    ],
+    cmdclass={'clean': CleanCommand},
+    setup_requires=["numpy>=1.11.0"],
+    configuration=configuration,
+    **extra_setuptools_args
+    )
 
-    if (len(sys.argv) >= 2
-            and ('--help' in sys.argv[1:] or sys.argv[1]
-                 in ('--help-commands', 'egg_info', '--version', 'clean'))):
-
-        try:
-            from setuptools import setup
-        except ImportError:
-            from distutils.core import setup
-
-        metadata['version'] = VERSION
-
-    else:
-
-        from numpy.distutils.core import setup
-        metadata['configuration'] = configuration
-
-    setup(**metadata)
+    setuptools.setup(**metadata)
 
 
 if __name__ == "__main__":
