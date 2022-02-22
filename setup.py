@@ -78,7 +78,6 @@ def configuration(parent_package='', top_path=None):
 
 def setup_package():
     metadata = dict(
-    version=VERSION,
     name=DISTNAME,
     maintainer=MAINTAINER,
     maintainer_email=MAINTAINER_EMAIL,
