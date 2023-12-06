@@ -211,7 +211,7 @@ class BFASTMonitorPython(BFASTMonitorBase):
         # compute new limits (in data NOT containing missing values)
         # ns = n - num_nans[self.n]
         ns = self.n - num_nans[self.n - 1]
-        h = np.int(float(ns) * self.hfrac)
+        h = int(float(ns) * self.hfrac)
         Ns = N - num_nans[N - 1]
 
         if ns <= 5 or Ns - ns <= 5:
